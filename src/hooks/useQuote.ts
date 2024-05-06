@@ -2,21 +2,28 @@ import { CurrentConfig } from "@/config/config";
 import { QUOTER_CONTRACT_ADDRESS } from "@/lib/constants";
 import {
   fromReadableAmount,
-  getProvider,
   toReadableAmount,
 } from "@/lib/helpers";
 import Quoter from "@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json";
 import { ethers } from "ethers";
 import { usePool } from "./usePool";
+import { useProvider } from "./useProvider";
 
 export const useQuote = () => {
   const { getPoolInfo } = usePool();
+  const {getProvider} = useProvider();
 
   const quote = async () => {
+    const provider = getProvider();
+    
+    if (!provider) {
+      throw new Error("No provider");
+    }
+
     const quoterContract = new ethers.Contract(
       QUOTER_CONTRACT_ADDRESS,
       Quoter.abi,
-      getProvider()
+      provider
     );
 
     const { token0, token1, fee } = await getPoolInfo();

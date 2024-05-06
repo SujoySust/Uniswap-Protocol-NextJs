@@ -1,9 +1,9 @@
 import { CurrentConfig } from "@/config/config";
 import { POOL_FACTORY_CONTRACT_ADDRESS } from "@/lib/constants";
-import { getProvider } from "@/lib/helpers";
 import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 import { computePoolAddress } from "@uniswap/v3-sdk";
 import { ethers } from "ethers";
+import { useProvider } from "./useProvider";
 
 interface PoolInfo {
   token0: string;
@@ -16,10 +16,12 @@ interface PoolInfo {
 }
 
 export const usePool = () => {
+  const { getProvider } = useProvider();
+  
   const getPoolInfo = async (): Promise<PoolInfo> => {
     const provider = getProvider();
 
-    if (provider) {
+    if (!provider) {
       throw new Error("No provider");
     }
 
@@ -33,7 +35,7 @@ export const usePool = () => {
     const poolContract = new ethers.Contract(
       currentPoolAddress,
       IUniswapV3PoolABI.abi,
-      getProvider()
+      provider
     );
     const [token0, token1, fee, tickSpacing, liquidity, slot0] =
       await Promise.all([

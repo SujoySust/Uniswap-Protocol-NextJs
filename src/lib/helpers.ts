@@ -14,7 +14,3 @@ export function toReadableAmount(rawAmount: number, decimals: number): string {
     .formatUnits(rawAmount, decimals)
     .slice(0, READABLE_FORM_LEN);
 }
-
-export function getProvider(): providers.Provider {
-  return new ethers.providers.JsonRpcProvider(CurrentConfig.rpc.mainnet);
-}
