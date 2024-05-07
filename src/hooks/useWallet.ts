@@ -85,8 +85,11 @@ export const useWallet = () => {
   };
 
   const wrapETH = async (eth: number) => {
+    console.log('calling wrap eth');
+
     const provider = getProvider()
     const address = getWalletAddress()
+  
     if (!provider || !address) {
       throw new Error('Cannot wrap ETH without a provider and wallet address')
     }
@@ -107,7 +110,7 @@ export const useWallet = () => {
       maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS
     };
 
-    await sendTransaction(transaction);
+    return await sendTransaction(transaction);
   };
 
   return {

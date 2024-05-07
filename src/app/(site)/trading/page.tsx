@@ -22,22 +22,16 @@ const Trade = () => {
   const { env, tokens, rpc } = CurrentConfig;
 
   const {
-    wallet,
     getWalletAddress,
     connectBrowserExtensionWallet,
     getCurrencyBalance,
     wrapETH,
   } = useWallet();
 
+  const { createTrade, executeTrade, displayTrade } = useTrade();
+
   const walletAddress = getWalletAddress();
-
-  console.log('wallet ===', wallet);
-
-  console.log('walletAddress ====', walletAddress);
-
-  const { createTrade, executeTrade, displayTrade } = useTrade(
-    wallet,
-  );
+  const provider = getProvider();
 
   const [trade, setTrade] = useState<TokenTrade>();
   const [txState, setTxState] = useState<TransactionState>(
@@ -55,17 +49,14 @@ const Trade = () => {
   });
 
   // Update wallet state given a block number
-  const refreshBalances = useCallback(async () => {
-    const provider = getProvider();
-    const address = getWalletAddress();
-
-    if (!address || !provider) {
+  const refreshBalances = async () => {
+    if (!walletAddress || !provider) {
       return;
     }
 
-    setTokenInBalance(await getCurrencyBalance(provider, address, tokens.in));
-    setTokenOutBalance(await getCurrencyBalance(provider, address, tokens.out));
-  }, []);
+    setTokenInBalance(await getCurrencyBalance(provider, walletAddress, tokens.in));
+    setTokenOutBalance(await getCurrencyBalance(provider, walletAddress, tokens.out));
+  };
 
   // Event Handlers
 
@@ -75,17 +66,16 @@ const Trade = () => {
     }
   }, []);
 
-  const onCreateTrade = useCallback(async () => {
+  const onCreateTrade = async () => {
     refreshBalances();
     setTrade(await createTrade());
-  }, []);
+  };
 
-  const onTrade = useCallback(async (trade: TokenTrade | undefined) => {
-    console.log('walletAddress', walletAddress);
+  const onTrade = async (trade: TokenTrade | undefined) => {
     if (trade) {
       setTxState(await executeTrade(trade, walletAddress));
     }
-  }, []);
+  };
 
   return (
     <div className="App">
@@ -111,7 +101,12 @@ const Trade = () => {
       </button>
       <h3>{`Wallet Address: ${getWalletAddress()}`}</h3>
       {env === Environment.WALLET_EXTENSION && !getWalletAddress() && (
-        <button onClick={onConnectWallet}>Connect Wallet</button>
+        <button
+          className="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full m-2"
+          onClick={onConnectWallet}
+        >
+          Connect Wallet
+        </button>
       )}
       <h3>{`Block Number: ${blockNumber + 1}`}</h3>
       <h3>{`Transaction State: ${txState}`}</h3>

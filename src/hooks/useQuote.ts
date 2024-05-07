@@ -27,6 +27,7 @@ export const useQuote = () => {
     );
 
     const { token0, token1, fee } = await getPoolInfo();
+
     const quotedAmounOut =
       await quoterContract.callStatic.quoteExactInputSingle(
         token0,

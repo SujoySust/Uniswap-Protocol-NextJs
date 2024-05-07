@@ -24,7 +24,9 @@ export const useProvider = () => {
 
       const getBrowserExtensionProvider = (): ethers.providers.Web3Provider | null => {
         try {
-          return new ethers.providers.Web3Provider(window?.ethereum, "any");
+          if (window?.ethereum) {
+            return new ethers.providers.Web3Provider(window?.ethereum, "any");
+          } else return null;
         } catch (e) {
           console.log("No Wallet Extension Found");
           return null;

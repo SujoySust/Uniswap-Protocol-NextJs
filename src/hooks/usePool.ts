@@ -37,6 +37,7 @@ export const usePool = () => {
       IUniswapV3PoolABI.abi,
       provider
     );
+
     const [token0, token1, fee, tickSpacing, liquidity, slot0] =
       await Promise.all([
         poolContract.token0(),

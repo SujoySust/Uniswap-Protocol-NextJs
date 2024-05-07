@@ -12,16 +12,17 @@ const Quotation = () => {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between  font-mono lg:flex">
-        <h1>Quotation Page</h1>
-        <h3>{`Quote input amount: ${CurrentConfig.tokens.amountIn} ${CurrentConfig.tokens.in.symbol}`}</h3>
-        <h3>{`Quote output amount: ${outputAmount} ${CurrentConfig.tokens.out.symbol}`}</h3>
-        <button className="button" onClick={onQuote}>
-          <p>Quote</p>
-        </button>
-      </div>
-    </main>
+    <div className="App">
+      <h1>Quotation Page</h1>
+      <h3>{`Quote input amount: ${CurrentConfig.tokens.amountIn} ${CurrentConfig.tokens.in.symbol}`}</h3>
+      <h3>{`Quote output amount: ${outputAmount} ${CurrentConfig.tokens.out.symbol}`}</h3>
+      <button
+        className="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full m-2"
+        onClick={onQuote}
+      >
+        <p>Quote</p>
+      </button>
+    </div>
   );
 };
 

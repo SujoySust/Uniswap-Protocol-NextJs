@@ -23,26 +23,29 @@ import {
   ERC20_ABI,
   MAX_FEE_PER_GAS,
   MAX_PRIORITY_FEE_PER_GAS,
-  QUOTER_CONTRACT_ADDRESS,
   SWAP_ROUTER_ADDRESS,
   TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER,
+  TRADING_QUOTER_CONTRACT_ADDRESS,
 } from "@/lib/constants";
 
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import JSBI from "jsbi";
 import { useProvider } from "./useProvider";
 import { TransactionState, useTransaction } from "./useTransaction";
+import { useWallet } from "./useWallet";
 
 export type TokenTrade = Trade<Token, Token, TradeType>;
 
-export const useTrade = (wallet: ethers.Wallet | null) => {
+export const useTrade = () => {
   const { getProvider } = useProvider();
+  const { wallet, getWalletAddress} = useWallet();
   const { sendTransaction } = useTransaction(wallet);
 
   const { getPoolInfo } = usePool();
   const { tokens } = CurrentConfig;
 
   const provider = getProvider();
+
 
   const createTrade = async () => {
     const { sqrtPriceX96, liquidity, tick } = await getPoolInfo();
@@ -86,7 +89,7 @@ export const useTrade = (wallet: ethers.Wallet | null) => {
 
     const tokenApproval = await getTokenTransferApproval(
       CurrentConfig.tokens.in,
-      walletAddress
+      walletAddress,
     );
 
     // Fail if transfer approvals do not go through
@@ -135,7 +138,7 @@ export const useTrade = (wallet: ethers.Wallet | null) => {
     );
 
     const quoteCallReturnData = await provier.call({
-      to: QUOTER_CONTRACT_ADDRESS,
+      to: TRADING_QUOTER_CONTRACT_ADDRESS,
       data: calldata,
     });
 
@@ -147,7 +150,7 @@ export const useTrade = (wallet: ethers.Wallet | null) => {
 
   const getTokenTransferApproval = async (
     token: Token,
-    walletAddress: string | null
+    walletAddress: string | null,
   ): Promise<TransactionState> => {
     try {
       if (!provider) {
