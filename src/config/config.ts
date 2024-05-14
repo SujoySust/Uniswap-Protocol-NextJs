@@ -1,4 +1,4 @@
-import { USDC_TOKEN, WETH_TOKEN } from "@/lib/constants";
+import { DAI_TOKEN, USDC_TOKEN, WETH_TOKEN } from "@/lib/constants";
 import { Token } from "@uniswap/sdk-core";
 import { FeeAmount } from "@uniswap/v3-sdk";
 
@@ -15,14 +15,19 @@ export interface BlockConfigInterface {
     mainnet: string;
   };
   wallet: {
-    address: string
-    privateKey: string
-  }
+    address: string;
+    privateKey: string;
+  };
   tokens: {
     in: Token;
     amountIn: number;
+    amountOut: number;
     out: Token;
     poolFee: number;
+    fractionToRemove: number;
+    fractionToAdd: number;
+    amountInToCollect: number
+    amountOutToCollect: number
   };
 }
 
@@ -33,14 +38,19 @@ export const CurrentConfig: BlockConfigInterface = {
     mainnet: "http://localhost:8545",
   },
   wallet: {
-    address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+    address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     privateKey:
-      '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+      "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
   },
   tokens: {
     in: USDC_TOKEN,
     amountIn: 1000,
-    out: WETH_TOKEN,
-    poolFee: FeeAmount.MEDIUM,
+    amountOut: 1000,
+    out: DAI_TOKEN,
+    poolFee: FeeAmount.LOW,
+    fractionToRemove: 1,
+    fractionToAdd: 0.5,
+    amountInToCollect: 10,
+    amountOutToCollect: 10,
   },
 };
